@@ -1,0 +1,77 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mysvcs-reactsvc
+  labels:
+    account: reactsvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactsvc
+  labels:
+    app: reactsvc
+spec:
+  selector:
+    matchLabels:
+      app: reactsvc
+  template:
+    metadata:
+      labels:
+        app: reactsvc
+    spec:
+      serviceAccountName: mysvcs-reactsvc
+      containers:
+      - name: reactsvc
+        image: srranjan007/reactsvcimg2
+#The above for local kind repos, the below the general public one
+#      	image: docker.io/srranjan007/reactsvcimg2
+        imagePullPolicy: IfNotPresent
+        resources: {}
+        ports:
+        - containerPort: 9095
+        env:
+         - name: MYSQL_HOSTNAME
+           valueFrom:
+              configMapKeyRef:
+                name: my-config
+                key: MYSQL_HOSTNAME
+         - name: MYSQLUSER
+           valueFrom:
+              secretKeyRef:
+                name: my-creds
+                key: MYSQLUSER
+         - name: MYSQLPASSWORD
+           valueFrom:
+              secretKeyRef:
+                name: my-creds
+                key: MYSQLPASSWORD
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reactsvc
+  labels:
+    app: reactsvc
+    service: reactsvc
+spec:
+  selector:
+    app: reactsvc
+#    service: reactsvc
+#    type: api
+#  type: LoadBalancer
+#  type: ClusterIP
+# Most probably, for standalone testing in Minikube, the following Nodeport will be used, but for Istio gateway based testing, this will remain commented. Most probably, the default is the above cluseterIP.
+# This nodePort: 30005 added to ensure whether I can have a node port that is known beforehand, and works with typt Nodeport only
+#  type: NodePort   
+  ports:
+  - port: 9095
+    name: http
+#    nodePort: 30005      # To be used only with NodePort, not for the default ClusterIP
+    protocol: TCP
+    targetPort: 9095
+status:
+  loadBalancer: {}
+---

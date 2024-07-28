@@ -1,0 +1,31 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: reactrouter
+spec:
+  parentRefs:
+  - name: react-gateway
+  hostnames: ["hexagear.com"]
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: grafana
+      port: 3000
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /backsvc
+    backendRefs:
+    - name: reactsvc
+      port: 9095
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /frontsvc
+    backendRefs:
+    - name: proxysvc
+      port: 9082
+

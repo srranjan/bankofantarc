@@ -1,0 +1,22 @@
+kubectl apply -f - <<EOF
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: httpbin
+spec:
+  parentRefs:
+  - name: httpbin-gateway
+  hostnames: ["httpbin.example.com"]
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /status
+    - path:
+        type: PathPrefix
+        value: /delay
+    backendRefs:
+    - name: httpbin
+      port: 8000
+EOF
+
