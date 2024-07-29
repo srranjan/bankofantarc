@@ -1,0 +1,43 @@
+
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: My Spring Boot Automation
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  ci-job:
+    steps:
+      - uses: docker://alpine/git:latest
+        run: |
+          git config --global --add safe.directory /cloudbees/workspace
+      - name: checkout
+        uses: cloudbees-io/checkout@v1
+      - name: Build Spring Boot App
+        uses: docker://maven:latest
+        run: |
+          mvn -B -DskipTests clean package
+      - name: Run tests
+        uses: docker://maven:latest
+        run: |
+          mvn test
+      - name: Scan with SonarQube bundled action
+        uses: cloudbees-io/sonarqube-bundled-sast-scan-code@v1
+        kind: scan
+      - name: Set up Docker Hub registry
+        uses: cloudbees-io/configure-oci-credentials@v1
+        with:
+          registry: index.docker.io # or docker.io
+          username: ${{ vars.QUICKSTART_DOCKER_USERNAME }}
+          password: ${{ secrets.QUICKSTART_DOCKER_PASSWORD }}
+      - name: Build Docker Image
+        uses: docker://docker:latest
+        run: |
+          docker build -t ${{ vars.QUICKSTART_DOCKER_USERNAME }}/my-spring-boot-app:latest .
+      - name: Push image to OCI registry
+        uses: cloudbees-io/kaniko@v1
+        with:
+            destination: index.docker.io/${{ vars.QUICKSTART_DOCKER_USERNAME }}/reactcrusvc:latest
