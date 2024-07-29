@@ -34,11 +34,9 @@ jobs:
           registry: index.docker.io # or docker.io
           username: ${{ vars.QUICKSTART_DOCKER_USERNAME }}
           password: ${{ secrets.QUICKSTART_DOCKER_PASSWORD }}
-      - name: Build Docker Image
-        uses: docker://docker:latest
-        run: |
-          docker build -t ${{ vars.QUICKSTART_DOCKER_USERNAME }}/reactcrusvc:latest .
-      - name: Push image to OCI registry
+      - name: Build and push Docker Image
         uses: cloudbees-io/kaniko@v1
         with:
-            destination: index.docker.io/${{ vars.QUICKSTART_DOCKER_USERNAME }}/reactcrusvc:latest
+          context: . 
+          dockerfile: Dockerfile 
+          destination: index.docker.io/${{ vars.QUICKSTART_DOCKER_USERNAME }}/my-spring-boot-app:latest
