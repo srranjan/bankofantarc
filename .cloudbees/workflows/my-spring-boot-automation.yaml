@@ -37,7 +37,7 @@ jobs:
       - name: Build Docker Image
         uses: docker://docker:latest
         run: |
-          docker build -t ${{ vars.QUICKSTART_DOCKER_USERNAME }}/my-spring-boot-app:latest .
+          docker build -t ${{ vars.QUICKSTART_DOCKER_USERNAME }}/reactcrusvc:latest .
       - name: Push image to OCI registry
         uses: cloudbees-io/kaniko@v1
         with:
