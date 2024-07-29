@@ -3,6 +3,7 @@ apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name: My Spring Boot Automation
 
+
 on:
   push:
     branches:
