@@ -39,4 +39,4 @@ jobs:
         with:
           context: . 
           dockerfile: Dockerfile 
-          destination: index.docker.io/${{ vars.QUICKSTART_DOCKER_USERNAME }}/my-spring-boot-app:latest
+          destination: index.docker.io/${{ vars.QUICKSTART_DOCKER_USERNAME }}/reactsvccrud:latest
