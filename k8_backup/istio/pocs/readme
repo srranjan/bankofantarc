@@ -1,0 +1,150 @@
+When my artifacts in ingress dir did not work with metallb and istio based on my experience and the following URL, then I tried to do a simpler POC mentioned in this URL trail with one change - I use namespace istio-system instead of default(starting at kubectl label namespace default istio-injection=enabled), but I am unsuccessful, and have a vague feelng either I am missing something or metallb is not working (though the gateway loadbalancer had worked with minikube tunnel way):
+
+https://istio.io/latest/docs/setup/additional-setup/getting-started/
+
+As such, I am for now abandoning this attempt, and will try to work further using port-forward way, untill I find some other gateway proxy method.
+
+Trying to gather autonomous way to exercise this POC(i.e., using the documentation wihout any change, not even changing the 
+namespace, rather using namespace default to do the poc, which I do both for kind and for minikube):
+https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/#determining-the-ingress-ip-and-ports
+
+
+kubectl get crd gateways.gateway.networking.k8s.io &> /dev/null || \
+  { kubectl kustomize "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.0.0" | kubectl apply -f -; }
+
+
+
+Istio without ingress and egress thingies:
+istioctl install -f demopruned.yaml -y
+
+kubectl label namespace default istio-injection=enabled
+
+
+ kubectl apply -f httpbin.yaml
+ kubectl apply -f samplegateway.yaml
+ kubectl apply -f sampleroute.yaml
+
+Beyond that the Minikube storyline:
+minikube tunnel
+. ./samplegeturl.sh
+
+INGRESS_HOST 10.105.134.83
+INGRESS_PORT 80
+
+Now, both the tests are succesful in the minikube storyline in accordance to the documentation, withe good fat outputs:
+
+curl -s -I -HHost:httpbin.example.com "http://$INGRESS_HOST:$INGRESS_PORT/status/200"
+curl -s -I -HHost:httpbin.example.com "http://$INGRESS_HOST:$INGRESS_PORT/headers"
+
+Now, divering at minikube tunnel, the corresponding story line for kind:
+
+https://kind.sigs.k8s.io/docs/user/loadbalancer/
+
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
+
+kubectl wait --namespace metallb-system \
+                --for=condition=ready pod \
+                --selector=app=metallb \
+                --timeout=90s 
+
+
+docker network inspect -f '{{.IPAM.Config}}' kind
+[{172.18.0.0/16  172.18.0.1 map[]} {fc00:f853:ccd:e793::/64  fc00:f853:ccd:e793::1 map[]}]
+
+kubectl apply -f https://kind.sigs.k8s.io/examples/loadbalancer/metallb-config.yaml
+
+After the above shenanigans, here are the moments of truth:
+
+. ./samplegeturl.sh
+
+INGRESS_HOST 172.19.255.200
+INGRESS_PORT 80
+
+But the tests fails for kind, as we don't get the outputs of the type we got for minikube:
+curl -s -I -HHost:httpbin.example.com "http://$INGRESS_HOST:$INGRESS_PORT/status/200"
+curl -s -I -HHost:httpbin.example.com "http://$INGRESS_HOST:$INGRESS_PORT/headers"
+
+Now, I do some more nonsense on minikube. Remove the minikube tunnel, delete and redeploy gtw and the route and then apply the above metallb plot to minikube, and see what happens there.
+
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
+
+kubectl wait --namespace metallb-system \
+                --for=condition=ready pod \
+                --selector=app=metallb \
+                --timeout=90s 
+
+
+docker network inspect -f '{{.IPAM.Config}}' minikube
+[{192.168.49.0/24  192.168.49.1 map[]}]
+
+kubectl apply -f https://kind.sigs.k8s.io/examples/loadbalancer/metallb-config.yaml
+
+. ./samplegeturl.sh
+
+INGRESS_HOST 172.19.255.201
+INGRESS_PORT 80
+Contrary to expectation, we get the host value that we had got for kind.
+
+As suspected, the 2 below failed as they had failed for kind.
+curl -s -I -HHost:httpbin.example.com "http://$INGRESS_HOST:$INGRESS_PORT/status/200"
+curl -s -I -HHost:httpbin.example.com "http://$INGRESS_HOST:$INGRESS_PORT/headers"
+
+So metallb sub-plot of the story is not working either for kind or for minikube.
+
+Essentially, the problem seems to be in the IP value 172.19.255.201 assigned. Need to understand what is this shagufa.
+
+Before finally giving up, let me add one final plot to this story. Using the steps taken for minikube (with default namespace, 
+not istio-system), let me do all the things and then do one more thing, the  "deploy load balancer" steps given in the documentation.
+
+Steps will be all the same till the following failures:
+curl -s -I -HHost:httpbin.example.com "http://$INGRESS_HOST:$INGRESS_PORT/status/200"
+curl -s -I -HHost:httpbin.example.com "http://$INGRESS_HOST:$INGRESS_PORT/headers"
+
+Now here is the last step I do in the last step in this POC:
+
+kubectl apply -f https://kind.sigs.k8s.io/examples/loadbalancer/usage.yaml
+
+LB_IP=$(kubectl get svc/foo-service -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+echo $LB_IP
+172.19.255.201
+
+curl ${LB_IP}:5678
+curl: (7) Failed to connect to 172.19.255.201 port 5678 after 3079 ms: No route to host
+Failure is hardly a surprise.
+
+A postscript for minikube:
+
+How things works for minikube??
+
+In one particular run, I get the following:
+. ./samplegeturl.sh
+INGRESS_HOST 10.102.68.22
+INGRESS_PORT 80
+
+This host is the same host that is visible on the kubectl get gtw command.
+The ping works like this:
+ping 10.102.68.22
+PING 10.102.68.22 (10.102.68.22) 56(84) bytes of data.
+From 192.168.49.2 icmp_seq=2 Redirect Host(New nexthop: 192.168.49.1)
+
+
+And this host can be successfully pinged, and a slight hint I get at the minikube tunnel output that I don't fully understand:
+minikube tunnel
+[sudo] password for rranjan: 
+Status:	
+	machine: minikube
+	pid: 43319
+	route: 10.96.0.0/12 -> 192.168.49.2
+	minikube: Running
+	services: [httpbin-gateway-istio]
+    errors: 
+		minikube: no errors
+		router: no errors
+		loadbalancer emulator: no errors
+
+
+And of course, that ping for 10.102.68.22 starts failing once I kill the minikube tunnel session. May be, sometimes in future I might understand this with reference to docker or minikube networking.
+
+
+

@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+commonLabels:
+  org: bankofantarc.com
+resources:
+- serviceaccount.yaml
+- deployment.yaml
+- service.yaml
+configMapGenerator:
+- name: my-config
+  literals:
+  - MYSQL_HOSTNAME=mysql
+#files:
+#- ./connection.properties
+secretGenerator:
+- name: my-creds
+  literals:
+  - MYSQLUSER=root
+  - MYSQLPASSWORD=p@ssword

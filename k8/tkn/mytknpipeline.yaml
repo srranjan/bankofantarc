@@ -1,0 +1,126 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: my-spring-boot-pipeline
+spec:
+  tasks:
+    - name: checkout
+      taskRef:
+        name: git-clone
+    - name: build
+      taskRef:
+        name: maven-build
+      params:
+        - name: maven-command
+          value: "-B -DskipTests clean package"
+    - name: test
+      taskRef:
+        name: maven-build
+      params:
+        - name: maven-command
+          value: "test"
+# Switch off the sonarqube scan for now
+#    - name: sonarqube-scan
+#      taskRef:
+#        name: sonarqube-scan
+    - name: docker-login
+      taskRef:
+        name: docker-login
+      params:
+        - name: username
+          value: ${{vars.QUICKSTART_DOCKER_USERNAME}}
+        - name: password
+          value: ${{secrets.QUICKSTART_DOCKER_PASSWORD}}
+    - name: docker-build-push
+      taskRef:
+        name: kaniko-build-push
+      params:
+        - name: dockerfile
+          value: Dockerfile
+        - name: image
+          value: index.docker.io/${{vars.QUICKSTART_DOCKER_USERNAME}}/reactsvccrud:latest
+  resources:
+    - name: git-clone
+      type: Task
+      spec:
+        steps:
+        - name: git-clone
+          image: alpine/git:latest
+          command:
+          - sh
+          - -c
+          - |
+            git config --global --add safe.directory /tekton/workspace
+            git clone ${{params.repository}} .
+        params:
+        - name: repository
+          type: string
+    - name: maven-build
+      type: Task
+      spec:
+        steps:
+        - name: maven-build
+          image: maven:latest
+          command:
+          - sh
+          - -c
+          - mvn ${{params.maven-command}}
+        params:
+        - name: maven-command
+          type: string
+    - name: sonarqube-scan
+      type: Task
+      spec:
+        steps:
+        - name: sonarqube-scan
+          image: cloudbees-io/sonarqube-bundled-sast-scan-code:v1
+          command:
+          - sh
+          - -c
+          - sonarqube-scanner 
+        params:
+        - name: sonarqube-url
+          type: string
+        - name: sonarqube-token
+          type: string
+    - name: docker-login
+      type: Task
+      spec:
+        steps:
+        - name: docker-login
+          image: docker:latest
+          command:
+          - sh
+          - -c
+          - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin ${{params.registry}}
+        params:
+        - name: username
+          type: string
+        - name: password
+          type: string
+        - name: registry
+          type: string
+    - name: kaniko-build-push
+      type: Task
+      spec:
+        steps:
+        - name: kaniko-build-push
+          image: gcr.io/kaniko-project/executor:debug
+          command:
+          - sh
+          - -c
+          - |
+            docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" ${{params.registry}}
+            /kaniko/executor --context . --dockerfile ${{params.dockerfile}} --destination ${{params.image}}
+        params:
+        - name: dockerfile
+          type: string
+        - name: image
+          type: string
+        - name: registry
+          type: string
+        - name: username
+          type: string
+        - name: password
+          type: string
+

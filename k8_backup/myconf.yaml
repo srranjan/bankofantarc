@@ -1,0 +1,8 @@
+#vcap.application.port=9091
+MYSQL_HOSTNAME=mysql
+#Above for internal mysql service, below for external mysql host (egress)
+#MYSQL_HOSTNAME=aimachine2
+#my_broker_host=my-cluster-kafka-bootstrap
+MY_PROVIDER_HOST=reactsvc
+#The above does not work, but as we have set up reactsvc as default in application file, it is okay.
+

@@ -1,0 +1,12 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: my-spring-boot-listener
+spec:
+  triggers:
+    - name: my-spring-boot-trigger
+      bindings:
+        - ref: my-github-binding
+      template:
+        ref: my-spring-boot-trigger
+

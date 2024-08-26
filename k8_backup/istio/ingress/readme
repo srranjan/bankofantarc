@@ -1,0 +1,2 @@
+As explained in the reademe_more doc, the ingress worked for minikube, but did not work with kind when we try to replace minikube tunnel function 
+with metallb. May be, I am missing something. More pure poc was captured in pocs dir.

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: reactsvc-route
+spec:
+  to:
+    kind: Service
+    name: reactsvc-service

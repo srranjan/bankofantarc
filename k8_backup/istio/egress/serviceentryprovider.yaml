@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: provider-external
+spec:
+  hosts:
+  - reactsvc
+#  - aimachine2    #This is the logical value to be used in the /etc/hosts of the host, but I cannot use this for now as MY_PROVIDER_HOST=reactsvc is not getting captured from configmap to Java code via application properties. Hence will use reactsvc in the /etc/hosts of the host of kind.
+  addresses:
+  - 192.168.13.129/32
+  ports:
+  - name: tcp
+    number: 9095
+    protocol: tcp
+  location: MESH_EXTERNAL
+#https://istio.io/latest/blog/2018/egress-tcp/
+
