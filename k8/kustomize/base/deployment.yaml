@@ -45,7 +45,7 @@ spec:
            mountPath: /config
          - name: my-secrets
            mountPath: /secrets
-      volumes: # Indentation fixed here
+      volumes:
        - name: config
          configMap:
            name: my-config

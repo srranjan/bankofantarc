@@ -19,6 +19,9 @@ spec:
       params:
         - name: maven-command
           value: "test"
+    - name: sonarqube-scan
+      taskRef:
+        name: sonarqube-scan
     - name: docker-login
       taskRef:
         name: docker-login
@@ -63,6 +66,21 @@ spec:
           - mvn ${{params.maven-command}}
         params:
         - name: maven-command
+          type: string
+    - name: sonarqube-scan
+      type: Task
+      spec:
+        steps:
+        - name: sonarqube-scan
+          image: cloudbees-io/sonarqube-bundled-sast-scan-code:v1
+          command:
+          - sh
+          - -c
+          - sonarqube-scanner 
+        params:
+        - name: sonarqube-url
+          type: string
+        - name: sonarqube-token
           type: string
     - name: docker-login
       type: Task

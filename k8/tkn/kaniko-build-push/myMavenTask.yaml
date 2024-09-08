@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: maven-build
+spec:
+  steps:
+  - name: maven-build
+    image: maven:latest
+    command:
+    - sh
+    - -c
+    - mvn ${{params.MAVEN_COMMAND}}
+  params:
+  - name: MAVEN_COMMAND
+    type: string

@@ -1,19 +1,25 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-commonLabels:
-  org: bankofantarc.com
 resources:
+- myconfigmap.yaml
+- mysecrets.yaml
+- namespace.yaml
 - serviceaccount.yaml
 - deployment.yaml
 - service.yaml
-configMapGenerator:
-- name: my-config
-  literals:
-  - MYSQL_HOSTNAME=mysql
+#The configMapGenerator and secretGenerator did not work inexplicably due to the changed name not getting reflected in Deployment.yaml, and hence, for now, I am commenting below and instead using myconfigmap.yaml and mysecrets.yaml
+#configMapGenerator:
+#- literals:
+#  - MYSQL_HOSTNAME=mysql
+#  name: my-config
 #files:
 #- ./connection.properties
-secretGenerator:
-- name: my-creds
-  literals:
-  - MYSQLUSER=root
-  - MYSQLPASSWORD=p@ssword
+#secretGenerator:
+#- literals:
+#  - MYSQLUSER=root
+#  - MYSQLPASSWORD=p@ssword
+#  name: my-creds
+labels:
+- includeSelectors: true
+  pairs:
+    org: bankofantarc.com
