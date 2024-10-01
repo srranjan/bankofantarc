@@ -25,3 +25,7 @@ task deploy-to-argocd has failed: "step-login" exited with code 20
 The small problem will be tackled sometimes later - TBD.
 After NN files work, we shall move to complete PP also.
 The main problem is, how to hit argocd server from tekton pipeline. Should pipeline also be in argocd namespace, should the argocd application itself be in arogcd namespace, etc. etc.
+
+In an effor to make it work, tried this suggestion by creating argocdrbac.yaml, but it did not work:
+Make sure that the Tekton service account used in the namespace where your Pipeline is running has the right permissions to interact with resources in the argocd namespace, if necessary. You may define a Role or ClusterRole and bind it with a RoleBinding or ClusterRoleBinding to the service account.
+

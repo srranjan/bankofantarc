@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: argocd-env-configmap
 data:
-#  ARGOCD_SERVER: argocd-server
-  ARGOCD_SERVER: argocd-service:8080
+  ARGOCD_SERVER: argocd-server:80
+#  ARGOCD_SERVER: argocd-server.argocd.svc.cluster.local
+#  ARGOCD_SERVER: argocd-service:8080
 #  ARGOCD_SERVER: localhost:8080

@@ -2,6 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
 #  name: clone-build-push
+#  serviceAccountName: tekton-argocd-sa
   name: argocd-deploy
 spec:
   description: |

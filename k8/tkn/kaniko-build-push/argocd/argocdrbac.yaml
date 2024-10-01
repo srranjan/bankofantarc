@@ -1,0 +1,30 @@
+#Experimentation - has not worked
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-argocd-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argocd-example-binding
+subjects:
+- kind: ServiceAccount
+  name: tekton-argocd-sa
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-argocd-roles
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argocd-example-clusterbinding
+subjects:
+- kind: ServiceAccount
+  name: tekton-argocd-sa
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-argocd-clusterroles

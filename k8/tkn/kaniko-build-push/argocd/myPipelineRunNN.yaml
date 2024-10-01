@@ -1,6 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
+#  serviceAccountName: tekton-argocd-sa
   generateName: argocd-deploy-run-
 spec:
   pipelineRef:
