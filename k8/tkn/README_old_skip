@@ -1,5 +1,5 @@
 
-PostScript: The files in this folder has not been verified and will not work. Rather, for tekton success, move to the kaniko based child folder to this folder (Phase 4 as explained in the corresponding README.md). Hence, can totally ignore this folder, unless you need to further attempt tekton by a second set of files. For triggered tekton version, go to the triggered folder which has also been validated to a large extent, though the flawless success has not materialized.
+PostScript: The files in this folder has not been verified and will not work. Rather, for tekton success, move to the kaniko based child folder to this folder (Phase 4 as explained in the corresponding README.md). Hence, can totally ignore this folder, unless you need to further attempt tekton by a second set of files.
 
 minikube start --memory=4096 --cpus=4
 

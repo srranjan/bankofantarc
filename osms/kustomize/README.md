@@ -7,10 +7,6 @@ kubectl create namespace corecrud
 kubectl apply -f mysql-pvc.yaml -n corecrud
 kubectl apply -f mysql_k8.yaml -n corecrud
 The above from k8 folder, whereas the below from base folder.
-PostScript: At a later time, let us use the helm method for mysql:
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install mysql bitnami/mysql --values values.yaml -n corecrud
-Note:For either of the 2 methods, you might have to create database and table using hint in readme-docker-compose.md(of course you are using not docker compose sql, but k8s mysql pod), after doing this in a separate window: kubectl port-forward <mysql-pod-name> 3306:3306 -n corecrud
 Validation of kustomization:
 kubectl apply --dry-run=client -o yaml -k ./
 To actuall deploy stuff:
@@ -26,9 +22,7 @@ This gives the required curl:
 curl http://192.168.49.2:30005/backsvc/clients
 But a simpler way to arrive at the above url is this:
 minikube service reactsvc -n corecrud --url
-PostScript: However, as I mentioned elsewhere, there is no need to use NodePort even in minikube, the following 2 are the steps required to test the svc reactsvc with the default clusterIP type(this is a trivial but important finding):
-kubectl port-forward reactsvc-744b98fc-dc8dq 9095:9095 -n corecrud
-curl http://localhost:9095/backsvc/clients
+
 To install mysql client in ubuntu:
 sudo apt update && sudo apt install mysql-client -y
 

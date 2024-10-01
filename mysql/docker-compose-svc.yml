@@ -1,0 +1,30 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=p@ssword
+      - MYSQL_DATABASE=corecruddb
+    ports: 
+      - "3306:3306"
+    networks:
+      - mydockernet
+
+# Use Spring Boot with Tomcat embedded image 
+# Watch out for this MYSQL_HOSTNAME=server1.p2p.net
+# https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/
+  core1:
+    image: srranjan/reactsvccrud:latest
+    container_name: reactsvccrudcontainer
+    environment:
+      MYSQL_HOSTNAME: server1.p2p.net
+    depends_on:
+      - mysql
+#port assignment in line with that declared for the embedded tomcat in application.yml
+    ports:
+      - "9095:9095"
+    networks:
+      - mydockernet
+networks:
+   mydockernet:

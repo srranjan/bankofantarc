@@ -1,0 +1,49 @@
+#sed -i 's/^/      /' yourfile.txt
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: my-trigger-template
+spec:
+  params:
+    - name: git-revision
+    - name: git-commit-message
+    - name: git-repo-url
+    - name: git-repo-name
+    - name: content-type
+    - name: pusher-name
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: clone-build-push-run-
+      spec:
+        pipelineRef:
+          name: clone-build-push
+        podTemplate:
+          securityContext:
+            fsGroup: 65532
+        workspaces:
+        - name: shared-data
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+              - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 4Gi
+#Added the below workspace item for dockerconfig auth
+        - name: docker-credentials
+          secret:
+            secretName: docker-credentials
+        - name: maven-settings
+#    configMap:
+#        name: custom-maven-settings
+          emptyDir: {}
+        params:
+        - name: repo-url
+          value: $(tt.params.git-repo-url)
+#          value: https://github.com/srranjan/bankofantarc
+# Added image-reference below - need to verify whether tt based resolution needs here!!
+        - name: image-reference
+          value: index.docker.io/srranjan/reactsvccrud:latest
+# Need to add argoCD based references below

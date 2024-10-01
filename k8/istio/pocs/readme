@@ -1,3 +1,4 @@
+Postscript: I think this dir and file will be skipped.
 When my artifacts in ingress dir did not work with metallb and istio based on my experience and the following URL, then I tried to do a simpler POC mentioned in this URL trail with one change - I use namespace istio-system instead of default(starting at kubectl label namespace default istio-injection=enabled), but I am unsuccessful, and have a vague feelng either I am missing something or metallb is not working (though the gateway loadbalancer had worked with minikube tunnel way):
 
 https://istio.io/latest/docs/setup/additional-setup/getting-started/

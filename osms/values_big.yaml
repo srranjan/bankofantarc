@@ -1,0 +1,55 @@
+# values.yaml
+
+image: "bitnami/mysql:8.0.34" # Use the latest version of MySQL
+service:
+  name: "mysql" # Change the service name to "mysql"
+  ports:
+    - "3306:3306"
+persistence:
+  enabled: true
+  storageClass: "local-path"
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  name: "mysql-data"
+  path: "/bitnami/mysql"
+  annotations:
+    "helm.sh/resource-policy": "keep"
+  # Persistent volume claim for the data volume
+  #  pvcs:
+  #    - name: "mysql-data"
+  #      # Specify the appropriate storage class for your CRC environment
+  #      storageClassName: "local-path"
+  #      # Set the size of the data volume
+  #      resources:
+  #        requests:
+  #          storage: "1Gi"
+      # Use the appropriate access mode for your environment
+      # accessModes:
+      # - "ReadWriteOnce"
+  # Use a different storage class, if required
+  # storageClass: "gp2"
+# Configure MySQL server options
+mysql:
+  # Database credentials for the default database
+  rootPassword: "myPassword"
+  # Set the name of the default database
+  defaultDatabase: "mydb"
+  # Enable the MySQL server
+  enabled: true
+  # Configure the MySQL server options
+  serverOptions:
+    # Set the MySQL server's default character set
+    character_set_server: "utf8mb4"
+    # Set the MySQL server's default collation
+    collation_server: "utf8mb4_unicode_ci"
+# Specify the chart version for the Bitnami MySQL Helm chart
+chartVersion: "2024-11-15"
+# Specify the timeout for the chart install
+timeout: 300
+# Specify the resources to be used by the deployment
+resources:
+  requests:
+    memory: "256Mi"
+  limits:
+    memory: "512Mi"
+

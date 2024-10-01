@@ -1,0 +1,15 @@
+#apiVersion: v1
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: reactsvc-route
+  labels:
+    app: reactsvc-route
+spec:
+  port:
+    targetPort: 9095-http
+  to:
+    kind: Service
+    name: reactsvc-service
+    weight: 100
+  wildcardPolicy: None

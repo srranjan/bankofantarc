@@ -8,6 +8,7 @@ target/
 .project
 .settings
 .springBeans
+.json
 
 ### IntelliJ IDEA ###
 .idea
@@ -23,3 +24,5 @@ dist/
 nbdist/
 target/
 .nb-gradle/
+node_modules/
+k8/tkn/triggered/node_modules/

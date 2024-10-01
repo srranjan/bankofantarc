@@ -1,0 +1,8 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: manual
+provisioner: kubernetes.io/hostpath
+parameters:
+  path: "/home/rranjan/osms/data"  # Adjust the path if needed
+

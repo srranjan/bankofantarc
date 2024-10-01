@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: mysql-route
+  labels:
+    app: mysql-route
+spec:
+  port:
+    targetPort: 3306-http
+  to:
+    kind: Service
+    name: mysql
+    weight: 100
+  wildcardPolicy: None

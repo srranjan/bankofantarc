@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: reactsvc
-  namespace: corecrud
+#  namespace: corecrud
   labels:
     app: reactsvc
     service: reactsvc
@@ -17,12 +17,13 @@ spec:
 # This nodePort: 30005 added to ensure whether I can have a node port that is known beforehand, and works with typt Nodeport only
 # Hint for quick service testing using nodeport method: $(minikube ip):$NODE_PORT
 #  type: NodePort   
-# Commented out the above NodePort, as this might not be required even for minikube by using either port forward or gateway/ingress
   ports:
   - port: 9095
-    name: http
+    name: 9095-http
 #    nodePort: 30005      # To be used only with NodePort, not for the default ClusterIP
     protocol: TCP
     targetPort: 9095
-status:
-  loadBalancer: {}
+  sessionAffinity: None
+  type: ClusterIP
+#status:
+#  loadBalancer: {}

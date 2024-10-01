@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+#  name: clone-build-push
+  name: argocd-deploy
+spec:
+  description: |
+    This pipeline is just to deploy  using argocd.
+    No push it to a registry
+  params:
+  - name: image-reference
+    type: string
+  - name: application-name
+    type: string
+#  workspaces:
+# Below for docker credential added
+#  - name: docker-credentials
+  tasks:
+  - name: deploy-to-argocd 
+    taskRef:
+      name: argocd-task-sync-and-wait
+    params:
+    - name: application-name
+      value: $(params.application-name) # Pass the application name
+    - name: revision
+      value: $(params.image-reference)  # Or use a specific tag/revision
+    - name: argocd-env-configmap
+      value: argocd-env-configmap
+    - name: argocd-env-secret
+      value: argocd-env-secret
+    - name: flags
+      value: --insecure
+

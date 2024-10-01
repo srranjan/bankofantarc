@@ -1,0 +1,13 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: my-binding
+spec:
+  params:
+    - name: git-repo-url
+      value: $(body.repository.clone_url)
+    - name: git-revision
+      value: $(body.after)
+#    - name: gitrevision
+#      value: $(body.ref)
+

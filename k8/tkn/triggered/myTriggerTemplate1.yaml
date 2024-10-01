@@ -1,0 +1,15 @@
+#sed -i 's/^/      /' yourfile.txt
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: mytriggertemplate
+spec:
+  params:
+    - name: git-revision
+    - name: git-commit-message
+    - name: git-repo-url
+    - name: git-repo-name
+    - name: content-type
+    - name: pusher-name
+  resourcetemplates:
+  

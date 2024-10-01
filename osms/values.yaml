@@ -1,0 +1,3 @@
+auth:
+  rootPassword: p@ssword
+  database: corecruddb

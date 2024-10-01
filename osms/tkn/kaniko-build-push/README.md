@@ -2,15 +2,13 @@ Begin Phase 4 - Tekton works with kaniko
 minikube start --memory=4096 --cpus=4
 minikube start --memory=16384 --cpus=8
 
-(1) Tekton install:
+Tekton install:
 kubectl apply --filename \
 https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
-Note: The above takes some time to complete, so don't go fast on below commands.
 kubectl get pods --namespace tekton-pipelines
 
 https://tekton.dev/docs/how-to-guides/kaniko-build-push/#full-code-samples
-(2)
-These commands can sometimes timeout, so don't panic, retry.
+
 tkn hub install task git-clone
 tkn hub install task maven
 
@@ -21,7 +19,7 @@ kubectl get tasks -A
 
 docker login
 srranjan/<commonOne> without embellishments srranjan@yahoo.com
-This creates a file ~/.docker/config.json.
+This creats a file ~/.docker/config.json.
 
 The output of cat ~/.docker/config.json | base64 -w0 is put in the mydockersecrets.yaml file.
 
@@ -30,25 +28,15 @@ cd ~/devops2/bankofantarc/k8/tkn/kaniko-build-push
 kubectl apply -f mydockersecrets.yaml
 secret/docker-credentials created
 
- #Don't use this: kubectl apply -f myMavenTask.yaml # Not used for now
+ kubectl apply -f myMavenTask.yaml # Not used for now
  kubectl apply -f myPipeline.yaml
-Note: The below command will not be required for triggered flow, instead you will create triggertemplate, binding and listener.
+
  kubectl create -f myPipelineRun.yaml
- 
-pipelinerun.tekton.dev/clone-build-push-run-kwgf7 created
-tkn pipelinerun logs  clone-build-push-run-kwgf7
-Pipeline still running ...
-PipelineRun is still running: Tasks Completed: 0 (Failed: 0, Cancelled 0), Incomplete: 3, Skipped: 0
 
-Now, for starting the pipeline, after a lot of trial and error, used this:
-tkn pipeline start clone-build-push --use-pipelinerun clone-build-push-run-kwgf7
-PipelineRun started: clone-build-push-run-5hw8j
+pipelinerun.tekton.dev/clone-build-push-run-bdxm5 created
 
-In order to track the PipelineRun progress run:
-tkn pipelinerun logs clone-build-push-run-5hw8j -f -n default
-
-This is the end of main phase 4 playbook, but below are some important commands etc. There is also an important Addenda on argoCD in the argocod subfolder. 
-
+tkn pipelinerun logs  clone-build-push-run-bdxm5 -f 
+Error: pipelines.tekton.dev "clone-build-push" not found
 {
 Some debug commands:
 kubectl get tasks -A

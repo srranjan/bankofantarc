@@ -1,0 +1,52 @@
+Caution: Added the following 3 lines to .gitignore before running the following from triggered folder:
+node_modules/
+k8/tkn/triggered/node_modules/
+.json - This one earlier than the above 2 lines
+However, additionally I shall try to deleted node_modules and .json before any git add, but added these, just in case I blunder.
+
+
+npm install express
+node mywebhookreceiver.js
+http://localhost:3030/webhook
+Tested successfully using this:
+curl -X POST -H "Content-Type: application/json" -d '{"id":1,"name":"Raju","phone":"1231231234","address":"1 Deer Creek","potalCd":"12345","type":"1","balance":"111"}'  http://localhost:3030/webhook
+
+ngrok http http://localhost:3030
+Went to the web page:    http://127.0.0.1:4040
+Gave the IP address that led to a successful call from Linux (not from Windows due to format issue over there):
+
+curl -X POST -H "Content-Type: application/json" -d '{"id":1,"name":"Raju","phone":"1231231234","address":"1 Deer Creek","potalCd":"12345","type":"1","balance":"111"}'  https://55ba-173-71-124-112.ngrok-free.app/webhook
+
+Also tested github push webhook event reaching http://localhost:3030 
+
+This may help to trigger tekton.
+
+
+
+Go through the following if you need help in ngrok set up:
+ngrok
+https://ngrok.com/docs/getting-started/?os=linux
+https://ngrok.com/docs/using-ngrok-with/docker/
+
+Created a google based account with ngrok.
+https://dashboard.ngrok.com/get-started/setup/linux
+
+curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
+	| sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \
+	&& echo "deb https://ngrok-agent.s3.amazonaws.com buster main" \
+	| sudo tee /etc/apt/sources.list.d/ngrok.list \
+	&& sudo apt update \
+	&& sudo apt install ngrok
+The above command was problematic but this following worked, at least it looks initially:
+sudo snap install ngrok
+
+ngrok config add-authtoken 2mejXbkR4IAqkpD1NQ8U5s7aIM7_4QXbqNo2XLXdoMfBBbyT7
+Authtoken saved to configuration file: /home/rranjan/snap/ngrok/189/.config/ngrok/ngrok.yml
+
+Let me save the token at least:
+2mejXbkR4IAqkpD1NQ8U5s7aIM7_4QXbqNo2XLXdoMfBBbyT7
+https://dashboard.ngrok.com/get-started/setup/linux
+A good page to glance at for authentication options.
+
+
+

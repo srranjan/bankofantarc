@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: java17-maven-build
+spec:
+  steps:
+  - name: setup-java
+    image: eclipse-temurin:17-jre-alpine # Use a Java 17 image
+    command: ['bash', '-c', 'echo "export JAVA_HOME=$PWD/jre" >> $HOME/.bashrc && echo "export PATH=$PATH:$JAVA_HOME/bin" >> $HOME/.bashrc']
+  - name: maven-build
+    image: maven:3.8.7-jdk-17-alpine  # Use Maven with Java 17 
+    command: ['mvn', 'clean', 'package']
+  workspaces:
+  - name: source
+

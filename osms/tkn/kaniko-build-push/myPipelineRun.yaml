@@ -16,7 +16,7 @@ spec:
         - ReadWriteOnce
         resources:
           requests:
-            storage: 4Gi
+            storage: 2Gi
 #Added the below workspace item for dockerconfig auth
   - name: docker-credentials
     secret:
@@ -31,5 +31,3 @@ spec:
 # Added image-reference below
   - name: image-reference
     value: index.docker.io/srranjan/reactsvccrud:latest
-# Most probably, after its successful deploy, I need to do this also:
-# tkn pipeline start <pipeline-name> -r <pipelinerun-name>

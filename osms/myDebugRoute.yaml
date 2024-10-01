@@ -1,0 +1,31 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  creationTimestamp: "2024-09-16T18:56:35Z"
+  labels:
+    name: hello-openshift
+  name: hello-openshift
+  namespace: hello-openshift
+  resourceVersion: "36260"
+  uid: c88d3e20-4865-4f8c-bb04-3cc291bb5a73
+spec:
+  host: hello-openshift-hello-openshift.apps-crc.testing
+  port:
+    targetPort: 8080
+  to:
+    kind: Service
+    name: hello-openshift
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: "2024-09-16T18:56:35Z"
+      status: "True"
+      type: Admitted
+    host: hello-openshift-hello-openshift.apps-crc.testing
+    routerCanonicalHostname: router-default.apps-crc.testing
+    routerName: default
+    wildcardPolicy: None

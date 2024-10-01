@@ -1,0 +1,22 @@
+#https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/
+#apiVersion: gateway.networking.k8s.io/v1beta1
+#Upgrading to latest
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+#  name: httpbin-gateway
+  name: common-gateway
+spec:
+  gatewayClassName: istio
+  listeners:
+  - name: http
+    hostname: "bankofantarc.com"
+    port: 80
+    protocol: HTTP
+    allowedRoutes:
+      namespaces:
+#        from: Same
+        from: All
+
+# https://gateway-api.f5se.io/guides/allowedroutes/#gateway-and-route-attachment-spec-allowedroute
+#My attempt for going to different namespace router has failed till now. So All has no effect.

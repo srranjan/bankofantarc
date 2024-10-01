@@ -33,3 +33,6 @@ spec:
     value: index.docker.io/srranjan/reactsvccrud:latest
 # Most probably, after its successful deploy, I need to do this also:
 # tkn pipeline start <pipeline-name> -r <pipelinerun-name>
+# Added  for argoCD - need to ascertain another entry for revision is required or not.
+  - name: application-name
+    value: <TBD>

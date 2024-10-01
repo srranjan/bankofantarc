@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: argocd-deploy-run-
+spec:
+  pipelineRef:
+    name: argocd-deploy
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
+#  - name: docker-credentials
+#    secret:
+#      secretName: docker-credentials
+  params:
+  - name: image-reference
+    value: index.docker.io/srranjan/reactsvccrud:latest
+# Most probably, after its successful deploy, I need to do this also:
+# tkn pipeline start <pipeline-name> -r <pipelinerun-name>
+# Added  for argoCD - need to ascertain another entry for revision is required or not.
+  - name: application-name
+    value: myArgoCDapp
