@@ -37,8 +37,11 @@ ngrok http http://localhost:8080
 Note: The above shell window will give you the first indication that webhook event has arrived.
 For using gateway version, you will need to use the README.md in gateway folder, followed by this:
 ngrok http http://bankofantarc.com:80
+Postscript reminder: The ngrok command gives you an internet http address that has to be quickly put in the webhook configuration of the github repository (you will need to login even for public repository, as you are modifying stuff).
 Note: For triggered with gateway, the above sequence might not be exactly representative.
 For ngrok set up(with google authentication), you may see the lower portion in playbookNodejs
+Postscript: Remember, there are 2 types of settings for github, when associated with respository, and another with profile, and in later case, you use that for going to 
+Developer -> Access token etc. to generate fresh token etc.
 
 tkn pipelinerun list
 Note: The above will give you the name of run instance like clone-build-push-run-q7ghl only after webhook trigger arrive, and probably the same is true of the pod shown by the below!!

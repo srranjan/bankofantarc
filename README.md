@@ -1,3 +1,4 @@
+Postscript: For traceability of different waves of experiments, you may use this command from this folder: find . -name README.md | xargs grep -i Phase (or sometimes also use -li with grep!!!
 # bankofantarc
 Version 1: In this, I was able to build and dockerize the spring boot in Cloudbees CI and upload it to docker hub using
 the docker hub credentials.

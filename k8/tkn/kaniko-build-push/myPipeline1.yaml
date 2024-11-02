@@ -1,0 +1,63 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: clone-build-push
+spec:
+  description: | 
+    This pipeline clones a git repo, builds a Docker image with Kaniko and
+    pushes it to a registry
+  params:
+  - name: repo-url
+    type: string
+#Addition below image-reference
+  - name: image-reference
+    type: string
+  workspaces:
+  - name: shared-data
+# Below for docker credential added
+  - name: docker-credentials
+  - name: maven-settings
+  tasks:
+  - name: fetch-source
+    taskRef:
+      name: git-clone
+    workspaces:
+    - name: output
+      workspace: shared-data
+    params:
+    - name: url
+      value: $(params.repo-url)
+    - name: subdirectory
+      value: ""
+    - name: deleteExisting
+      value: "true"
+#Addition below maven-build
+  - name: maven-build
+    runAfter: ["fetch-source"]
+    taskRef:
+      name: maven
+    workspaces:
+    - name: maven-settings
+      workspace: maven-settings
+    - name: source
+      workspace: shared-data
+    params:
+    - name: MAVEN_COMMAND
+      value: "clean package"  
+    - name: MAVEN_IMAGE
+      value: maven:3-eclipse-temurin-17-alpine
+#Addition below build-push - This version with buildah not yet tested.
+  - name: build-push
+    runAfter: ["maven-build"]
+    taskRef:
+      name: buildah-build-push
+    workspaces:
+    - name: source
+      workspace: shared-data
+    - name: dockerconfig
+      workspace: docker-credentials
+    params:
+    - name: IMAGE
+      value: $(params.image-reference)
+    - name: CONTEXT
+      value: . # Adjust if your Dockerfile isn't in the root

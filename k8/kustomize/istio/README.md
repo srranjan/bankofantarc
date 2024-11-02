@@ -42,12 +42,14 @@ https://istio.io/latest/docs/setup/platform-setup/openshift/
 
 End Phase 3a
 The following are random pastes, ignore them.
+PostScript: Possibly should not be ignored, as this is the way ngrok can be implemented. Most probably, I login with google email.
 ngrok
 https://ngrok.com/docs/getting-started/?os=linux
 https://ngrok.com/docs/using-ngrok-with/docker/
 
 
 npm install express
+PostScript: For above, sudo might be needed.
 node webhook_server.js
 http://localhost:3000/webhook
 

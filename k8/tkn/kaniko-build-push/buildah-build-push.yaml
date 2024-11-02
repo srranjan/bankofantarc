@@ -1,0 +1,30 @@
+#Not yet tested
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: buildah-build-push
+spec:
+  workspaces:
+  - name: source
+  - name: dockerconfig
+  params:
+  - name: IMAGE
+    type: string
+  - name: CONTEXT
+    type: string
+    default: "."
+  steps:
+  - name: build-and-push
+    image: registry.access.redhat.com/ubi8/ubi-minimal
+    workingDir: $(workspaces.source.path)/$(params.CONTEXT)
+    command: ["/bin/sh", "-c"]
+    script: |
+      # Authenticate to Docker registry
+      cat $(workspaces.dockerconfig.path)/.dockerconfigjson | docker login --username=$(DOCKER_USERNAME) --password=$(DOCKER_PASSWORD)
+
+      # Build the image with buildah
+      buildah bud -t $(params.IMAGE) -f Dockerfile .
+
+      # Push the image
+      buildah push $(params.IMAGE)
+

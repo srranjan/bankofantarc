@@ -1,12 +1,23 @@
 Begin Phase 4 - Tekton works with kaniko
 minikube start --memory=4096 --cpus=4
 minikube start --memory=16384 --cpus=8
+For bare metal, I only have this option:
+minikube start --memory=4096 --kubernetes-version=v1.31.0
+
 
 (1) Tekton install:
 kubectl apply --filename \
 https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 Note: The above takes some time to complete, so don't go fast on below commands.
 kubectl get pods --namespace tekton-pipelines
+
+Tekton cli:
+sudo dpkg -i  ./tektoncd-cli-0.38.1_Linux-64bit.deb
+
+Begin Postscript
+minikube start --kubernetes-version=v1.31.0
+kubectl was also updated to 1.31
+End Postscript
 
 https://tekton.dev/docs/how-to-guides/kaniko-build-push/#full-code-samples
 (2)
@@ -39,7 +50,7 @@ pipelinerun.tekton.dev/clone-build-push-run-kwgf7 created
 tkn pipelinerun logs  clone-build-push-run-kwgf7
 Pipeline still running ...
 PipelineRun is still running: Tasks Completed: 0 (Failed: 0, Cancelled 0), Incomplete: 3, Skipped: 0
-
+PostScript: The following should be successful, but the above is also successfully tested (may require bare metal). 
 Now, for starting the pipeline, after a lot of trial and error, used this:
 tkn pipeline start clone-build-push --use-pipelinerun clone-build-push-run-kwgf7
 PipelineRun started: clone-build-push-run-5hw8j

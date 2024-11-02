@@ -22,7 +22,7 @@ Also tested github push webhook event reaching http://localhost:3030
 This may help to trigger tekton.
 
 
-
+Postscript - Start here for quick set up of ngrok using gmail.com authStart here for quick set up of ngrok using gmail.com auth
 Go through the following if you need help in ngrok set up:
 ngrok
 https://ngrok.com/docs/getting-started/?os=linux
