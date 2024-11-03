@@ -1,0 +1,47 @@
+name: CI for Spring Boot Application
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build Spring Boot App
+      run: mvn -B clean package -DskipTests
+
+    - name: Run tests
+      run: mvn test
+
+    - name: SonarQube Scan
+      uses: cloudbees-io/sonarqube-bundled-sast-scan-code@v1
+      with:
+        kind: scan
+
+    - name: Set up Docker Hub registry
+      run: echo "${{ secrets.QUICKSTART_DOCKER_PASSWORD }}" | docker login -u ${{ secrets.QUICKSTART_DOCKER_USERNAME }} --password-stdin
+
+    - name: Build Docker Image
+      run: |
+        docker build -t index.docker.io/${{ secrets.QUICKSTART_DOCKER_USERNAME }}/reactsvccrud:latest .
+
+    - name: Push Docker Image
+      run: |
+        docker push index.docker.io/${{ secrets.QUICKSTART_DOCKER_USERNAME }}/reactsvccrud:latest
+
