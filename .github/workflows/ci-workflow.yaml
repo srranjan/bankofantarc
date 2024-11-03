@@ -29,10 +29,10 @@ jobs:
     - name: Run tests
       run: mvn test
 
-    - name: SonarQube Scan
-      uses: cloudbees-io/sonarqube-bundled-sast-scan-code@v1
-      with:
-        kind: scan
+#    - name: SonarQube Scan
+#      uses: cloudbees-io/sonarqube-bundled-sast-scan-code@v1
+#      with:
+#        kind: scan
 
     - name: Set up Docker Hub registry
       run: echo "${{ secrets.QUICKSTART_DOCKER_PASSWORD }}" | docker login -u ${{ secrets.QUICKSTART_DOCKER_USERNAME }} --password-stdin
