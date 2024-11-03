@@ -42,6 +42,13 @@ Note: For triggered with gateway, the above sequence might not be exactly repres
 For ngrok set up(with google authentication), you may see the lower portion in playbookNodejs
 Postscript: Remember, there are 2 types of settings for github, when associated with respository, and another with profile, and in later case, you use that for going to 
 Developer -> Access token etc. to generate fresh token etc.
+Postscript: Working on bare metal (without VM), I can say with confidence that I was able to complete the whole tekton pipeline successfully all the way to 
+push of the image to docker. This I am declaring for now for kubectl port-forward way and not for gateway way. But even without gateway way success, this is quite an 
+achievement, i.e., both the yaml in triggered folder and in kaniko* folder are working end to end, no doubt. Minikube on bare metal has shown its charisma. Below is a small 
+glimpse of success:
+AME                         STARTED          DURATION   STATUS
+clone-build-push-run-2knnz   20 minutes ago   4m5s       Succeeded
+
 
 tkn pipelinerun list
 Note: The above will give you the name of run instance like clone-build-push-run-q7ghl only after webhook trigger arrive, and probably the same is true of the pod shown by the below!!

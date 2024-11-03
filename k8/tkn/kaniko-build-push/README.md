@@ -1,7 +1,7 @@
 Begin Phase 4 - Tekton works with kaniko
 minikube start --memory=4096 --cpus=4
 minikube start --memory=16384 --cpus=8
-For bare metal, I only have this option:
+PostScript: For bare metal, I only have this option:
 minikube start --memory=4096 --kubernetes-version=v1.31.0
 
 
