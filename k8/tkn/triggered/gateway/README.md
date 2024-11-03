@@ -39,9 +39,15 @@ PostScript: Of course, the host changes from 10.96.125.226 to something else 10.
 My next was of course to have this artificial entry in /etc/hosts:
 10.96.125.226   bankofantarc.com
 
+Now I try to extend my success with triggered with this gateway based triggered, using this one:
 ngrok http http://bankofantarc.com:80
 
-And then I got the following beauty which seems to suggest the Istio gateway and route configured work.
-curl "http://bankofantarc.com/backsvc/clients"
-[]
-
+But this phase is unsuccessful, as in the ngrok window, I see git push webhook event coming:
+11:42:33.518 EST POST /                         404 Not Found    
+but, of course, http://bankofantarc.com:80 is not working, which I was hoping to work with minikube tunnel.
+I will not solve this issue for now, may be sometimes later.
+The conclusion is this: (1) The istio gateway functionality had worked for /clients application URL (requiring also mysql) and (2) triggered tekton pipeline from webhook github push even also worked, but (3) I could not marry 
+(1) and (2) for gateway based gibhub push webhook event triggering for complete tekton build all the way to image pushed to docker hub. 
+To sum up, the success of (2) is captured  in /k8/kustomize/istio/README.md.
+Success of (1) is captured in ./k8/tkn/triggered/README.md.
+And, of course, (3), i.e., I am at ./k8/tkn/triggered/gateway/README.md
