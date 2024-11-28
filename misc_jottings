@@ -1,0 +1,7 @@
+
+1. To overwrite the local with remote
+git fetch
+git reset --hard origin/main
+
+
+

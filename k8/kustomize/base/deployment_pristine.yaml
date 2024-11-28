@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactsvc
+  namespace: corecrud
+  labels:
+    app: reactsvc
+spec:
+  selector:
+    matchLabels:
+      app: reactsvc
+  template:
+    metadata:
+      labels:
+        app: reactsvc
+    spec:
+      serviceAccountName: mysvcs-reactsvc
+      containers:
+      - name: reactsvc
+        image: srranjan/reactsvccrud:latest
+        #The above for local kind repos, the below the general public one (PostScript correction - most probably the above too will fetch from docker hub)
+        #       image: docker.io/srranjan/reactsvccrud:latest
+        imagePullPolicy: IfNotPresent
+        resources: {}
+        ports:
+        - containerPort: 9095
+        env:
+         - name: MYSQL_HOSTNAME
+           valueFrom:
+              configMapKeyRef:
+                name: my-config
+                key: MYSQL_HOSTNAME
+         - name: MYSQLUSER
+           valueFrom:
+              secretKeyRef:
+                name: my-creds
+                key: MYSQLUSER
+         - name: MYSQLPASSWORD
+           valueFrom:
+              secretKeyRef:
+                name: my-creds
+                key: MYSQLPASSWORD
+        volumeMounts:
+         - name: config
+           mountPath: /config
+         - name: my-secrets
+           mountPath: /secrets
+      volumes:
+       - name: config
+         configMap:
+           name: my-config
+       - name: my-secrets
+         secret:
+           secretName: my-creds
+status: {}
+
