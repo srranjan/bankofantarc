@@ -39,7 +39,7 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        docker build -t index.docker.io/${{ secrets.QUICKSTART_DOCKER_USERNAME }}/reactsvccrud:latest .
+        docker build -t index.docker.io/${{ secrets.QUICKSTART_DOCKER_USERNAME }}/reactsvccrud_hub:latest .
 
     - name: Push Docker Image
       run: |
