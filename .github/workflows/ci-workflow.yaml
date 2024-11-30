@@ -43,5 +43,5 @@ jobs:
 
     - name: Push Docker Image
       run: |
-        docker push index.docker.io/${{ secrets.QUICKSTART_DOCKER_USERNAME }}/reactsvccrud:latest
+        docker push index.docker.io/${{ secrets.QUICKSTART_DOCKER_USERNAME }}/reactsvccrud_hub:latest
 
