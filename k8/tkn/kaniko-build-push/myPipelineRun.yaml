@@ -30,6 +30,6 @@ spec:
     value: https://github.com/srranjan/bankofantarc
 # Added image-reference below
   - name: image-reference
-    value: index.docker.io/srranjan/reactsvccrud:latest
+    value: index.docker.io/srranjan/reactsvccrud_tek:latest
 # Most probably, after its successful deploy, I need to do this also:
 # tkn pipeline start <pipeline-name> -r <pipelinerun-name>
